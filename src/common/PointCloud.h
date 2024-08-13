@@ -34,6 +34,7 @@
 
 #include <pdal/PointView.hpp>
 #include <pdal/PipelineExecutor.hpp>
+#include <pdal/PipelineManager.hpp>
 
 namespace pubgeo {
     struct MinMaxXYZ {
@@ -98,7 +99,7 @@ namespace pubgeo {
         }
 
     private:
-        pdal::PipelineExecutor *executor;
+        pdal::PipelineManager *executor;
         pdal::PointViewPtr pv;
 
         void CleanupPdalPointers();

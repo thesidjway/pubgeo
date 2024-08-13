@@ -57,9 +57,11 @@ namespace pubgeo {
     bool PointCloud::Read(const char *fileName) {
         try {
             CleanupPdalPointers();
-            executor = new pdal::PipelineExecutor(buildPipelineStr(fileName));
+            executor = new pdal::PipelineManager();
+            std::stringstream ss(buildPipelineStr(fileName));
+            executor->readPipeline(ss);
             executor->execute();
-            const pdal::PointViewSet &pvs = executor->getManagerConst().views();
+            const pdal::PointViewSet &pvs = executor->views();
             if (pvs.size() > 1) {
                 std::cerr << "[PUBGEO::PointCloud::READ] File contains additional unread sets." << std::endl;
             }
@@ -111,7 +113,8 @@ namespace pubgeo {
                  << "\n\t\t\t\"filename\":\"" << outputFileName << "\"\n\t\t}\n\t]\n}";
         try {
             const std::string pipe = pipeline.str();
-            pdal::PipelineExecutor executor(pipe);
+            pdal::PipelineManager executor;
+            executor.readPipeline(pipe);
             executor.execute();
         } catch (pdal::pdal_error &pe) {
             std::cerr << pe.what() << std::endl;
